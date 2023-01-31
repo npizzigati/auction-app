@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  max: 9.99
+  alert_percentage: 1
+  user: one
+  item: one
+
+two:
+  max: 9.99
+  alert_percentage: 1
+  user: two
+  item: two
