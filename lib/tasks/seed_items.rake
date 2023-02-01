@@ -27,7 +27,7 @@ task seed_items: :environment do
   )
 
   Item.create(
-    name: 'Novely Barware Set',
+    name: 'Novelty Barware Set',
     description: 'Early 20th century barware set',
     reserve_price: 350,
     filename: 'item-seed4.jpg',
