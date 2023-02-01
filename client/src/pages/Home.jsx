@@ -12,12 +12,13 @@ function Home () {
   const [itemsOnPage, setItemsOnPage] = useState([]);
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState(null);
+  const [numItemsDisplayed, setNumItemsDisplayed] = useState(null);
   const allItemData = useRef([]);
   const sortDropdownData = buildSortDropdownData(setSort);
 
   useEffect(() => {
     (async () => {
-      await retrieveItemData(allItemData);
+      await retrieveItemData(allItemData, setNumItemsDisplayed);
       await populateBidPrices(allItemData);
       buildItemsOnPage(allItemData.current, page, setItemsOnPage);
     })();
@@ -35,29 +36,39 @@ function Home () {
     <Container>
       <div>
         <DropdownSelect data={sortDropdownData} />
-        <Filter allItems={allItemData.current} filterItems={createFilterer(allItemData, setItemsOnPage, setPage)} />
+        <Filter
+          allItems={allItemData.current}
+          filterItems={createFilterer(allItemData, setItemsOnPage, setPage, setNumItemsDisplayed)}
+        />
       </div>
       <div className='gallery--container'>
         {itemsOnPage}
       </div>
-      <PaginationBar itemCount={allItemData.current.length} itemsPerPage={ITEMS_PER_PAGE} currentPage={page} setPage={setPage} />
+      <PaginationBar itemCount={numItemsDisplayed} itemsPerPage={ITEMS_PER_PAGE} currentPage={page} setPage={setPage} />
     </Container>
   );
 }
 
-function createFilterer (allItemData, setItemsOnPage, setPage) {
+function createFilterer (allItemData, setItemsOnPage, setPage, setNumItemsDisplayed) {
   return function (text) {
-    const filteredItems = allItemData.current.filter(item => item.name.includes(text) ||
-                                                     item.description.includes(text));
-    buildItemsOnPage(filteredItems, 1, setItemsOnPage);
+    if (text === '') {
+      buildItemsOnPage(allItemData.current, 1, setItemsOnPage);
+      setNumItemsDisplayed(allItemData.current.length);
+    } else {
+      const filteredItems = allItemData.current.filter(item => item.name.includes(text) ||
+                                                      item.description.includes(text));
+      buildItemsOnPage(filteredItems, 1, setItemsOnPage);
+      setNumItemsDisplayed(filteredItems.length);
+    }
     setPage(1);
   };
 }
 
-async function retrieveItemData (allItemData, page, setItemsOnPage) {
+async function retrieveItemData (allItemData, setNumItemsDisplayed) {
   await axios.get('api/v1/items')
     .then(res => {
       allItemData.current = res.data;
+      setNumItemsDisplayed(allItemData.current.length);
       console.log(res.data);
     });
   // TODO: Error handling

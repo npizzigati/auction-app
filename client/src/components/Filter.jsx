@@ -1,26 +1,33 @@
 import React, { useRef } from 'react';
+import Button from 'react-bootstrap/Button';
 
 function Filter ({ filterItems }) {
-  const inputDOMRef = useRef(null);
+  const inputDomRef = useRef(null);
 
   return (
     <div>
-      <label for='filter'>Filter text in item name/description:</label>
       <input
         type='text'
         id='filter'
-        ref={inputDOMRef}
-        onChange={() => filterItems(inputDOMRef.current.value)}
+        ref={inputDomRef}
+        placeholder='Filter items by name/description text'
+        onChange={() => filterItems(inputDomRef.current.value)}
       />
+      <Button
+        variant='primary'
+        size='sm'
+        onClick={() => clear(inputDomRef, filterItems)}
+      >
+        Clear Filter
+      </Button>
     </div>
   );
 }
 
-// function handleChange (inputDOMRef) {
-//   // console.log(inputDOMRef.current.value);
-//   const text = inputDOMRef.current.value;
-//   const filteredItems = allItems.filter(item => item.name.includes(text));
-//   buildItemsOnPage(filteredItems, 1, );
-// }
+function clear (inputDomRef, filterItems) {
+  console.log('clearing');
+  inputDomRef.current.value = '';
+  filterItems('');
+}
 
 export default Filter;
