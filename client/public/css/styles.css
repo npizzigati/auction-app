@@ -1,24 +1,54 @@
-.gallery {
+.gallery--container {
     display: flex;
+    justify-content: center;
     flex-wrap: wrap;
 }
 
-.gallery > div {
+.gallery--item {
     border: 1px solid black;
     overflow-wrap: break-word;
-    padding: 2em;
+    padding: 0.5em;
     margin: 1em;
     width: 10em;
+    height: 10em;
 }
 
-.item {
+.gallery--text {
     display: block;
-}
-
-.item--name {
     font-size: .9rem;
 }
 
-.item--description {
+.gallery--text__small {
     font-size: .7rem;
 }
+
+.pagination--container {
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.pagination--page-indicator {
+    margin: 0 auto;
+    width: 10em;
+    text-align: center;
+}
+
+.pagination--button-container {
+    display: flex;
+    justify-content: center;
+}
+
+.pagination--button {
+    margin: 0 1em;
+    cursor: pointer;
+}
+
+.pagination--button.disabled {
+    color: #777;
+    cursor: default;
+}
+
+.pagination--button:not(.disabled):hover {
+    color: #c55e4c
+}
+

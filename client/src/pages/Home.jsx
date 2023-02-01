@@ -29,7 +29,7 @@ function Home () {
 
   return (
     <Container>
-      <div className='gallery'>
+      <div className='gallery--container'>
         {itemsOnPage}
       </div>
       <PaginationBar itemCount={allItemData.current.length} itemsPerPage={ITEMS_PER_PAGE} currentPage={page} setPage={setPage} />
@@ -45,9 +45,9 @@ function buildItemsOnPage (itemsData, page, setItemsOnPage) {
   console.log('start, end: ', start, end);
   const markup = itemsData.slice(start, end).map(item => {
     return (
-      <div key={item.id}>
-        <span className='item item--name'>{item.name}</span>
-        <span className='item item--description'>{item.description}</span>
+      <div className='gallery--item' key={item.id}>
+        <span className='gallery--text'>{item.name}</span>
+        <span className='gallery--text gallery--text__small'>{item.description}</span>
       </div>
     );
   });

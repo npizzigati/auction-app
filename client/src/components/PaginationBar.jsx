@@ -1,29 +1,45 @@
 import React from 'react';
-import Pagination from 'react-bootstrap/Pagination';
 
 function PaginationBar ({ itemCount, itemsPerPage, currentPage, setPage }) {
-  const pages = [];
-  const numberOfPages = getNumberOfPages(itemCount, itemsPerPage);
-  for (let number = 1; number <= numberOfPages; number++) {
-    pages.push(
-      <Pagination.Item
-        key={number}
-        active={number === currentPage}
-        onClick={(ev) => handleClick(ev, setPage)}
-      >
-        {number}
-      </Pagination.Item>
-    );
-  }
+  const totalPages = getNumberOfPages(itemCount, itemsPerPage);
   return (
-    <Pagination>{pages}</Pagination>
+    <div className='pagination--container'>
+      <div className='pagination--page-indicator'>
+        <span>Page {currentPage} of {totalPages}</span>
+      </div>
+
+      <div className='pagination--button-container'>
+        <div
+          className={'pagination--button' + ((currentPage === 1) ? ' disabled' : '')}
+          onClick={(ev) => goToPrevPage(ev, currentPage, setPage)}
+        >
+          <span>&lt;&lt; Previous</span>
+        </div>
+        <div
+          className={'pagination--button' + ((currentPage === totalPages) ? ' disabled' : '')}
+          onClick={(ev) => goToNextPage(ev, currentPage, totalPages, setPage)}
+        >
+          <span>Next &gt;&gt;</span>
+        </div>
+      </div>
+    </div>
   );
 }
 
-function handleClick (ev, setPage) {
-  console.log('handling click');
-  const page = ev.target.innerText;
-  setPage(Number(page));
+function goToPrevPage (ev, currentPage, setPage) {
+  if (currentPage === 1) {
+    return;
+  }
+  console.log('handling click - prev');
+  setPage(currentPage - 1);
+}
+
+function goToNextPage (ev, currentPage, totalPages, setPage) {
+  if (currentPage === totalPages) {
+    return;
+  }
+  console.log('handling click - next');
+  setPage(currentPage + 1);
 }
 
 function getNumberOfPages (itemCount, itemsPerPage) {
