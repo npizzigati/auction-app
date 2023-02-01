@@ -3,6 +3,7 @@ import axios from '../axiosWithConfig.js';
 import Container from 'react-bootstrap/Container';
 
 import PaginationBar from '../components/PaginationBar.jsx';
+import Filter from '../components/Filter.jsx';
 import DropdownSelect from '../components/DropdownSelect.jsx';
 
 const ITEMS_PER_PAGE = 10;
@@ -18,12 +19,12 @@ function Home () {
     (async () => {
       await retrieveItemData(allItemData);
       await populateBidPrices(allItemData);
-      buildItemsOnPage(allItemData, page, setItemsOnPage);
+      buildItemsOnPage(allItemData.current, page, setItemsOnPage);
     })();
   }, []);
 
   useEffect(() => {
-    buildItemsOnPage(allItemData, page, setItemsOnPage);
+    buildItemsOnPage(allItemData.current, page, setItemsOnPage);
   }, [page]);
 
   useEffect(() => {
@@ -34,6 +35,7 @@ function Home () {
     <Container>
       <div>
         <DropdownSelect data={sortDropdownData} />
+        <Filter allItems={allItemData.current} filterItems={createFilterer(allItemData, setItemsOnPage, setPage)} />
       </div>
       <div className='gallery--container'>
         {itemsOnPage}
@@ -41,6 +43,15 @@ function Home () {
       <PaginationBar itemCount={allItemData.current.length} itemsPerPage={ITEMS_PER_PAGE} currentPage={page} setPage={setPage} />
     </Container>
   );
+}
+
+function createFilterer (allItemData, setItemsOnPage, setPage) {
+  return function (text) {
+    const filteredItems = allItemData.current.filter(item => item.name.includes(text) ||
+                                                     item.description.includes(text));
+    buildItemsOnPage(filteredItems, 1, setItemsOnPage);
+    setPage(1);
+  };
 }
 
 async function retrieveItemData (allItemData, page, setItemsOnPage) {
@@ -52,13 +63,13 @@ async function retrieveItemData (allItemData, page, setItemsOnPage) {
   // TODO: Error handling
 }
 
-function buildItemsOnPage (allItemData, page, setItemsOnPage) {
+function buildItemsOnPage (allItems, page, setItemsOnPage) {
   console.log('building items on page');
   const start = (page - 1) * ITEMS_PER_PAGE;
   const end = start + ITEMS_PER_PAGE;
   console.log('page: ', page);
   console.log('start, end: ', start, end);
-  const markup = allItemData.current.slice(start, end).map(item => {
+  const markup = allItems.slice(start, end).map(item => {
     return (
       <div className='gallery--item' key={item.id}>
         <span className='gallery--text'>{item.name}</span>
@@ -115,7 +126,7 @@ function sortItems (sort, allItemData, page, setPage, setItemsOnPage) {
   } else if (sort === 'price-desc') {
     allItemData.current.sort((a, b) => b.currentPrice - a.currentPrice);
   }
-  buildItemsOnPage(allItemData, page, setItemsOnPage);
+  buildItemsOnPage(allItemData.current, page, setItemsOnPage);
   setPage(1);
 }
 
