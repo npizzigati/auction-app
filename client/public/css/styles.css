@@ -1,0 +1,24 @@
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.gallery > div {
+    border: 1px solid black;
+    overflow-wrap: break-word;
+    padding: 2em;
+    margin: 1em;
+    width: 10em;
+}
+
+.item {
+    display: block;
+}
+
+.item--name {
+    font-size: .9rem;
+}
+
+.item--description {
+    font-size: .7rem;
+}

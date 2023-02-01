@@ -1,14 +1,10 @@
-import React, { useEffect } from 'react';
-import axios from 'axios';
+import React from 'react';
+import Home from './pages/Home.jsx';
 
 function App () {
-  useEffect(() => {
-    axios.get('http://localhost:3000/api/v1/users')
-      .then(res => console.log(res.data));
-  }, []);
-  const greeting = 'Hello Function Component!';
-
-  return <h1>{greeting}</h1>;
+  return (
+    <Home />
+  );
 }
 
 export default App;
