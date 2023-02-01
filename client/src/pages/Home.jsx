@@ -32,7 +32,7 @@ function Home () {
       <div className='gallery'>
         {itemsOnPage}
       </div>
-    <PaginationBar itemCount={allItemData.current.length} itemsPerPage={ITEMS_PER_PAGE} currentPage={page} setPage={setPage} />
+      <PaginationBar itemCount={allItemData.current.length} itemsPerPage={ITEMS_PER_PAGE} currentPage={page} setPage={setPage} />
     </Container>
   );
 }
