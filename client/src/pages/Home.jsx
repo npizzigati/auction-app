@@ -28,7 +28,7 @@ function Home () {
   }, [page]);
 
   useEffect(() => {
-    sortItems(sort, allItemData, page, setPage, setItemsOnPage);
+    sortItems(sort, allItemData, setPage, setItemsOnPage);
   }, [sort]);
 
   return (
@@ -120,13 +120,13 @@ function buildSortDropdownData (setSort) {
   };
 }
 
-function sortItems (sort, allItemData, page, setPage, setItemsOnPage) {
+function sortItems (sort, allItemData, setPage, setItemsOnPage) {
   if (sort === 'price-asc') {
     allItemData.current.sort((a, b) => a.currentPrice - b.currentPrice);
   } else if (sort === 'price-desc') {
     allItemData.current.sort((a, b) => b.currentPrice - a.currentPrice);
   }
-  buildItemsOnPage(allItemData.current, page, setItemsOnPage);
+  buildItemsOnPage(allItemData.current, 1, setItemsOnPage);
   setPage(1);
 }
 
