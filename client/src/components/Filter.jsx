@@ -1,16 +1,20 @@
 import React, { useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 
+const FILTER_MESSAGE = 'Filter items by name/description text';
+
 function Filter ({ filterItems }) {
   const inputDomRef = useRef(null);
 
   return (
     <div>
       <input
+        className='filter--input'
         type='text'
         id='filter'
         ref={inputDomRef}
-        placeholder='Filter items by name/description text'
+        placeholder={FILTER_MESSAGE}
+        size={FILTER_MESSAGE.length}
         onChange={() => filterItems(inputDomRef.current.value)}
       />
       <Button

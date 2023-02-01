@@ -24,7 +24,11 @@ function buildDropdownMenu (data, dropdownButtonTitle, setDropdownButtonTitle) {
     </Dropdown.Item>
   );
   return (
-    <DropdownButton id='dropdown-basic-button' title={dropdownButtonTitle}>
+    <DropdownButton
+      id='dropdown-basic-button'
+      title={dropdownButtonTitle}
+      size='sm'
+    >
       {dropdownItems}
     </DropdownButton>
   );

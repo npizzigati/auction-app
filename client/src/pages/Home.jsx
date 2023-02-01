@@ -34,7 +34,7 @@ function Home () {
 
   return (
     <Container>
-      <div>
+      <div className='gallery--criteria-container'>
         <DropdownSelect data={sortDropdownData} />
         <Filter
           allItems={allItemData.current}
@@ -51,12 +51,13 @@ function Home () {
 
 function createFilterer (allItemData, setItemsOnPage, setPage, setNumItemsDisplayed) {
   return function (text) {
+    text = text.toLowerCase();
     if (text === '') {
       buildItemsOnPage(allItemData.current, 1, setItemsOnPage);
       setNumItemsDisplayed(allItemData.current.length);
     } else {
-      const filteredItems = allItemData.current.filter(item => item.name.includes(text) ||
-                                                      item.description.includes(text));
+      const filteredItems = allItemData.current.filter(item => item.name.toLowerCase().includes(text) ||
+                                                       item.description.toLowerCase().includes(text));
       buildItemsOnPage(filteredItems, 1, setItemsOnPage);
       setNumItemsDisplayed(filteredItems.length);
     }

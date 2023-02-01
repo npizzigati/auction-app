@@ -1,3 +1,9 @@
+.gallery--criteria-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
 .gallery--container {
     display: flex;
     justify-content: center;
@@ -20,6 +26,10 @@
 
 .gallery--text__small {
     font-size: .7rem;
+}
+
+.filter--input {
+    margin-left: 1em;
 }
 
 .pagination--container {
