@@ -5,13 +5,19 @@ task seed_bids: :environment do
   Bid.create(
     user_id: User.first.id,
     item_id: Item.first.id,
-    amount: Item.first.reserve_price + 1
+    amount: 10
   )
 
   Bid.create(
     user_id: User.second.id,
     item_id: Item.second.id,
-    amount: Item.second.reserve_price + 1
+    amount: 20
+  )
+
+  Bid.create(
+    user_id: User.second.id,
+    item_id: Item.third.id,
+    amount: 30
   )
 
   puts 'complete'
