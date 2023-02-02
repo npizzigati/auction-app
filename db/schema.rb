@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_01_144729) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_02_050137) do
   create_table "autobids", force: :cascade do |t|
     t.decimal "max"
     t.integer "alert_percentage"
@@ -35,7 +35,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_01_144729) do
   create_table "items", force: :cascade do |t|
     t.string "name"
     t.string "description"
-    t.decimal "reserve_price"
     t.decimal "sold_price"
     t.boolean "sold"
     t.datetime "created_at", null: false
