@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from '../axiosWithConfig.js';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
@@ -11,6 +12,7 @@ import DropdownSelect from '../components/DropdownSelect.jsx';
 const ITEMS_PER_PAGE = 10;
 
 function Home () {
+  const navigate = useNavigate();
   const [itemsOnPage, setItemsOnPage] = useState([]);
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState(null);
@@ -119,9 +121,8 @@ function buildItemMarkup (item) {
           {`Current bid: $${Number(item.currentPrice).toFixed(2)}`}
         </div>
         <Button
-          className='filter--button'
           variant='secondary'
-          onClick={() => clear(inputDomRef, filterItems)}
+          onClick={() => navigate(`/detail/${item.id}`)}
         >
           Bid Now
         </Button>
