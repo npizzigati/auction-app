@@ -35,3 +35,6 @@
 # Ignore client node_modules and compiled js
 /client/node_modules
 /client/public/dist
+
+# Ignore image files
+/client/public/images/*
