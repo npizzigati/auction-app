@@ -98,7 +98,7 @@ async function populateBidPrices (allItemData) {
     const item = allItemData.current[i];
     const highestBid = await retrieveHighestBid(item.id);
     if (highestBid === undefined) {
-      item.currentPrice = item.reserve_price;
+      item.currentPrice = 0;
     } else {
       item.currentPrice = highestBid;
     }
