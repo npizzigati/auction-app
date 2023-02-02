@@ -3,21 +3,23 @@ task seed_users: :environment do
   User.all.destroy_all
 
   User.create(
-    first_name: 'Frank',
-    last_name: 'Sánchez',
-    role: 'regular'
-  )
-
-  User.create(
-    first_name: 'José',
-    last_name: 'Segoviano',
-    role: 'regular'
-  )
-
-  User.create(
-    first_name: 'Anne',
-    last_name: 'Smith',
+    name: 'admin1',
     role: 'admin'
+  )
+
+  User.create(
+    name: 'admin2',
+    role: 'admin'
+  )
+
+  User.create(
+    name: 'user1',
+    role: 'regular'
+  )
+
+  User.create(
+    name: 'user2',
+    role: 'regular'
   )
 
   puts 'complete'
