@@ -18,23 +18,23 @@ function Home () {
   const [sort, setSort] = useState(null);
   const allItemData = useRef([]);
   const filteredItemData = useRef([]);
-  const sortDropdownData = buildSortDropdownData(setSort);
+  const sortDropdownData = buildSortDropdownData();
 
   useEffect(() => {
     (async () => {
-      await retrieveItemData(allItemData);
-      await populateBidPrices(allItemData);
+      await retrieveItemData();
+      await populateBidPrices();
       filteredItemData.current = allItemData.current;
-      buildItemsOnPage(filteredItemData.current, page, setItemsOnPage);
+      buildItemsOnPage();
     })();
   }, []);
 
   useEffect(() => {
-    buildItemsOnPage(filteredItemData.current, page, setItemsOnPage);
+    buildItemsOnPage();
   }, [page]);
 
   useEffect(() => {
-    sortItems(sort, allItemData, filteredItemData, setPage, setItemsOnPage);
+    sortItems();
   }, [sort]);
 
   return (
@@ -45,7 +45,7 @@ function Home () {
       <div className='gallery--criteria-container'>
         <Filter
           allItems={allItemData.current}
-          filterItems={createFilterer(allItemData, filteredItemData, setItemsOnPage, setPage)}
+          filterItems={createFilterer()}
         />
         <div className='sort--container'>
           <DropdownSelect data={sortDropdownData} />
@@ -57,129 +57,130 @@ function Home () {
       <PaginationBar itemCount={filteredItemData.current.length} itemsPerPage={ITEMS_PER_PAGE} currentPage={page} setPage={setPage} />
     </Container>
   );
-}
 
-function createFilterer (allItemData, filteredItemData, setItemsOnPage, setPage) {
-  return function (text) {
-    text = text.toLowerCase();
-    if (text === '') {
-      buildItemsOnPage(allItemData.current, 1, setItemsOnPage);
-      filteredItemData.current = allItemData.current;
-    } else {
-      filteredItemData.current = allItemData.current.filter(item => item.name.toLowerCase().includes(text) ||
-                                                       item.description.toLowerCase().includes(text));
-      buildItemsOnPage(filteredItemData.current, 1, setItemsOnPage);
-    }
-    setPage(1);
-  };
-}
-
-async function retrieveItemData (allItemData) {
-  await axios.get('api/v1/items')
-    .then(res => {
-      allItemData.current = res.data;
-      console.log(res.data);
+  function buildItemsOnPage () {
+    console.log('building items on page');
+    const start = (page - 1) * ITEMS_PER_PAGE;
+    const end = start + ITEMS_PER_PAGE;
+    console.log('page: ', page);
+    console.log('start, end: ', start, end);
+    const markup = filteredItemData.current.slice(start, end).map(item => {
+      return buildItemMarkup(item);
     });
-  // TODO: Error handling
-}
 
-function buildItemsOnPage (allItems, page, setItemsOnPage) {
-  console.log('building items on page');
-  const start = (page - 1) * ITEMS_PER_PAGE;
-  const end = start + ITEMS_PER_PAGE;
-  console.log('page: ', page);
-  console.log('start, end: ', start, end);
-  const markup = allItems.slice(start, end).map(item => {
-    return buildItemMarkup(item);
-  });
+    setItemsOnPage(markup);
+  }
 
-  setItemsOnPage(markup);
-}
+  function createFilterer () {
+    console.log('Filtering item data'.toUpperCase());
+    return function (text) {
+      text = text.toLowerCase();
+      if (text === '') {
+        buildItemsOnPage();
+        filteredItemData.current = allItemData.current;
+      } else {
+        filteredItemData.current = allItemData.current.filter(item => item.name.toLowerCase().includes(text) ||
+                                                        item.description.toLowerCase().includes(text));
+      }
+      buildItemsOnPage();
+      setPage(1);
+    };
+  }
 
-function buildItemMarkup (item) {
-  return (
-    <div className='gallery--item' key={item.id}>
-      <div className='gallery--text'>
-        <ClampLines
-          className='gallery--name'
-          text={item.name}
-          lines={2}
-          ellipsis='...'
-        />
-        <ClampLines
-          className='gallery--description'
-          text={item.description}
-          lines={2}
-          ellipsis='...'
-        />
-      </div>
-      <div className='gallery--photo-container'>
-        <img className='gallery--photo' src={`./images/${item.filename}`} alt={item.name} />
-      </div>
-      <div className='gallery--bid-container'>
-        <div className='gallery--bid-price'>
-          {`Current bid: $${Number(item.currentPrice).toFixed(2)}`}
+  async function retrieveItemData () {
+    await axios.get('api/v1/items')
+      .then(res => {
+        allItemData.current = res.data;
+        console.log(res.data);
+      });
+    // TODO: Error handling
+  }
+
+  function buildItemMarkup (item) {
+    return (
+      <div className='gallery--item' key={item.id}>
+        <div className='gallery--text'>
+          <ClampLines
+            className='gallery--name'
+            text={item.name}
+            lines={2}
+            ellipsis='...'
+          />
+          <ClampLines
+            className='gallery--description'
+            text={item.description}
+            lines={2}
+            ellipsis='...'
+          />
         </div>
-        <Button
-          variant='secondary'
-          onClick={() => navigate(`/detail/${item.id}`)}
-        >
-          Bid Now
-        </Button>
+        <div className='gallery--photo-container'>
+          <img className='gallery--photo' src={`./images/${item.filename}`} alt={item.name} />
+        </div>
+        <div className='gallery--bid-container'>
+          <div className='gallery--bid-price'>
+            {`Current bid: $${Number(item.currentPrice).toFixed(2)}`}
+          </div>
+          <Button
+            variant='secondary'
+            onClick={() => navigate(`/detail/${item.id}`)}
+          >
+            Bid Now
+          </Button>
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
-async function populateBidPrices (allItemData) {
-  for (let i = 0; i < allItemData.current.length; i++) {
-    const item = allItemData.current[i];
-    const highestBid = await retrieveHighestBid(item.id);
-    if (highestBid === undefined) {
-      item.currentPrice = 0;
-    } else {
-      item.currentPrice = highestBid;
+  async function populateBidPrices () {
+    for (let i = 0; i < allItemData.current.length; i++) {
+      const item = allItemData.current[i];
+      const highestBid = await retrieveHighestBid(item.id);
+      if (highestBid === undefined) {
+        item.currentPrice = 0;
+      } else {
+        item.currentPrice = highestBid;
+      }
     }
   }
-}
 
-async function retrieveHighestBid (itemId) {
-  let highestBid;
-  await axios.get(`api/v1/bids?get_one=highest&item_id=${itemId}`)
-    .then(res => {
-      highestBid = res.data[0]?.amount;
-    });
-  return highestBid;
-}
-
-function buildSortDropdownData (setSort) {
-  return {
-    initialTitle: 'Sort: None',
-    options: [
-    {
-      id: 1,
-      name: 'Sort: Price (low to high)',
-      callback: () => setSort('price-asc')
-    },
-    {
-      id: 2,
-      name: 'Sort: Price (high to low)',
-      callback: () => setSort('price-desc')
-    }]
-  };
-}
-
-function sortItems (sort, allItemData, filteredItemData, setPage, setItemsOnPage) {
-  if (sort === 'price-asc') {
-    allItemData.current.sort((a, b) => a.currentPrice - b.currentPrice);
-    filteredItemData.current.sort((a, b) => a.currentPrice - b.currentPrice);
-  } else if (sort === 'price-desc') {
-    allItemData.current.sort((a, b) => b.currentPrice - a.currentPrice);
-    filteredItemData.current.sort((a, b) => b.currentPrice - a.currentPrice);
+  async function retrieveHighestBid (itemId) {
+    let highestBid;
+    await axios.get(`api/v1/bids?get_one=highest&item_id=${itemId}`)
+      .then(res => {
+        highestBid = res.data[0]?.amount;
+      });
+    return highestBid;
   }
 
-  buildItemsOnPage(filteredItemData.current, 1, setItemsOnPage);
-  setPage(1);
+  function buildSortDropdownData () {
+    return {
+      initialTitle: 'Sort: None',
+      options: [
+      {
+        id: 1,
+        name: 'Sort: Price (low to high)',
+        callback: () => setSort('price-asc')
+      },
+      {
+        id: 2,
+        name: 'Sort: Price (high to low)',
+        callback: () => setSort('price-desc')
+      }]
+    };
+  }
+
+  function sortItems () {
+    if (sort === 'price-asc') {
+      allItemData.current.sort((a, b) => a.currentPrice - b.currentPrice);
+      filteredItemData.current.sort((a, b) => a.currentPrice - b.currentPrice);
+    } else if (sort === 'price-desc') {
+      allItemData.current.sort((a, b) => b.currentPrice - a.currentPrice);
+      filteredItemData.current.sort((a, b) => b.currentPrice - a.currentPrice);
+    }
+
+    buildItemsOnPage();
+    setPage(1);
+  }
 }
 
 export default Home;
