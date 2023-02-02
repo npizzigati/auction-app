@@ -7,7 +7,7 @@ function Filter ({ filterItems }) {
   const inputDomRef = useRef(null);
 
   return (
-    <div>
+    <div className='filter--container'>
       <input
         className='filter--input'
         type='text'
@@ -18,6 +18,7 @@ function Filter ({ filterItems }) {
         onChange={() => filterItems(inputDomRef.current.value)}
       />
       <Button
+        className='filter--button'
         variant='primary'
         size='sm'
         onClick={() => clear(inputDomRef, filterItems)}

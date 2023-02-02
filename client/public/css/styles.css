@@ -1,3 +1,12 @@
+.title--container {
+    margin-top: 1em;
+    text-align: center;
+}
+
+.title--text {
+    font-size: 1.5rem;
+}
+
 .gallery--criteria-container {
     display: flex;
     justify-content: center;
@@ -28,8 +37,27 @@
     font-size: .7rem;
 }
 
+.sort--container {
+    margin: 1em 1em;
+}
+
+.filter--container {
+    margin: 1em 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    row-gap: 0.5em;
+}
+
 .filter--input {
-    margin-left: 1em;
+    display: block;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    margin-botton: 0.5em;
+}
+
+.filter--button {
+    display: block;
 }
 
 .pagination--container {
@@ -62,3 +90,7 @@
     color: #c55e4c
 }
 
+.u-ms-4 {
+    margin-left: 0.4em;
+    margin-right: 0.4em;
+}

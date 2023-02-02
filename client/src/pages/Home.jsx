@@ -35,12 +35,17 @@ function Home () {
 
   return (
     <Container>
+      <div className='title--container'>
+        <span className='title--text'>Antique Auction</span>
+      </div>
       <div className='gallery--criteria-container'>
-        <DropdownSelect data={sortDropdownData} />
         <Filter
           allItems={allItemData.current}
           filterItems={createFilterer(allItemData, filteredItemData, setItemsOnPage, setPage)}
         />
+        <div className='sort--container'>
+          <DropdownSelect data={sortDropdownData} />
+        </div>
       </div>
       <div className='gallery--container'>
         {itemsOnPage}

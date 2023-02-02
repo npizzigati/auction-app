@@ -26,6 +26,7 @@ function buildDropdownMenu (data, dropdownButtonTitle, setDropdownButtonTitle) {
   return (
     <DropdownButton
       id='dropdown-basic-button'
+      className='u-ms-4'
       title={dropdownButtonTitle}
       size='sm'
     >
