@@ -12,24 +12,25 @@ function Home () {
   const [itemsOnPage, setItemsOnPage] = useState([]);
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState(null);
-  const [numItemsDisplayed, setNumItemsDisplayed] = useState(null);
   const allItemData = useRef([]);
+  const filteredItemData = useRef([]);
   const sortDropdownData = buildSortDropdownData(setSort);
 
   useEffect(() => {
     (async () => {
-      await retrieveItemData(allItemData, setNumItemsDisplayed);
+      await retrieveItemData(allItemData);
       await populateBidPrices(allItemData);
-      buildItemsOnPage(allItemData.current, page, setItemsOnPage);
+      filteredItemData.current = allItemData.current;
+      buildItemsOnPage(filteredItemData.current, page, setItemsOnPage);
     })();
   }, []);
 
   useEffect(() => {
-    buildItemsOnPage(allItemData.current, page, setItemsOnPage);
+    buildItemsOnPage(filteredItemData.current, page, setItemsOnPage);
   }, [page]);
 
   useEffect(() => {
-    sortItems(sort, allItemData, setPage, setItemsOnPage);
+    sortItems(sort, allItemData, filteredItemData, setPage, setItemsOnPage);
   }, [sort]);
 
   return (
@@ -38,38 +39,36 @@ function Home () {
         <DropdownSelect data={sortDropdownData} />
         <Filter
           allItems={allItemData.current}
-          filterItems={createFilterer(allItemData, setItemsOnPage, setPage, setNumItemsDisplayed)}
+          filterItems={createFilterer(allItemData, filteredItemData, setItemsOnPage, setPage)}
         />
       </div>
       <div className='gallery--container'>
         {itemsOnPage}
       </div>
-      <PaginationBar itemCount={numItemsDisplayed} itemsPerPage={ITEMS_PER_PAGE} currentPage={page} setPage={setPage} />
+      <PaginationBar itemCount={filteredItemData.current.length} itemsPerPage={ITEMS_PER_PAGE} currentPage={page} setPage={setPage} />
     </Container>
   );
 }
 
-function createFilterer (allItemData, setItemsOnPage, setPage, setNumItemsDisplayed) {
+function createFilterer (allItemData, filteredItemData, setItemsOnPage, setPage) {
   return function (text) {
     text = text.toLowerCase();
     if (text === '') {
       buildItemsOnPage(allItemData.current, 1, setItemsOnPage);
-      setNumItemsDisplayed(allItemData.current.length);
+      filteredItemData.current = allItemData.current;
     } else {
-      const filteredItems = allItemData.current.filter(item => item.name.toLowerCase().includes(text) ||
+      filteredItemData.current = allItemData.current.filter(item => item.name.toLowerCase().includes(text) ||
                                                        item.description.toLowerCase().includes(text));
-      buildItemsOnPage(filteredItems, 1, setItemsOnPage);
-      setNumItemsDisplayed(filteredItems.length);
+      buildItemsOnPage(filteredItemData.current, 1, setItemsOnPage);
     }
     setPage(1);
   };
 }
 
-async function retrieveItemData (allItemData, setNumItemsDisplayed) {
+async function retrieveItemData (allItemData) {
   await axios.get('api/v1/items')
     .then(res => {
       allItemData.current = res.data;
-      setNumItemsDisplayed(allItemData.current.length);
       console.log(res.data);
     });
   // TODO: Error handling
@@ -132,13 +131,16 @@ function buildSortDropdownData (setSort) {
   };
 }
 
-function sortItems (sort, allItemData, setPage, setItemsOnPage) {
+function sortItems (sort, allItemData, filteredItemData, setPage, setItemsOnPage) {
   if (sort === 'price-asc') {
     allItemData.current.sort((a, b) => a.currentPrice - b.currentPrice);
+    filteredItemData.current.sort((a, b) => a.currentPrice - b.currentPrice);
   } else if (sort === 'price-desc') {
     allItemData.current.sort((a, b) => b.currentPrice - a.currentPrice);
+    filteredItemData.current.sort((a, b) => b.currentPrice - a.currentPrice);
   }
-  buildItemsOnPage(allItemData.current, 1, setItemsOnPage);
+
+  buildItemsOnPage(filteredItemData.current, 1, setItemsOnPage);
   setPage(1);
 }
 
