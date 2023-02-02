@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from '../axiosWithConfig.js';
 import Container from 'react-bootstrap/Container';
+import Button from 'react-bootstrap/Button';
+import ClampLines from 'react-clamp-lines';
 
 import PaginationBar from '../components/PaginationBar.jsx';
 import Filter from '../components/Filter.jsx';
@@ -86,16 +88,46 @@ function buildItemsOnPage (allItems, page, setItemsOnPage) {
   console.log('page: ', page);
   console.log('start, end: ', start, end);
   const markup = allItems.slice(start, end).map(item => {
-    return (
-      <div className='gallery--item' key={item.id}>
-        <span className='gallery--text'>{item.name}</span>
-        <span className='gallery--text gallery--text__small'>{item.description}</span>
-        <span className='gallery--text gallery--text__small'>{item.currentPrice}</span>
-      </div>
-    );
+    return buildItemMarkup(item);
   });
 
   setItemsOnPage(markup);
+}
+
+function buildItemMarkup (item) {
+  return (
+    <div className='gallery--item' key={item.id}>
+      <div className='gallery--text'>
+        <ClampLines
+          className='gallery--name'
+          text={item.name}
+          lines={2}
+          ellipsis='...'
+        />
+        <ClampLines
+          className='gallery--description'
+          text={item.description}
+          lines={2}
+          ellipsis='...'
+        />
+      </div>
+      <div className='gallery--photo-container'>
+        <img className='gallery--photo' src={`./images/${item.filename}`} alt={item.name} />
+      </div>
+      <div className='gallery--bid-container'>
+        <div className='gallery--bid-price'>
+          {`Current bid: $${Number(item.currentPrice).toFixed(2)}`}
+        </div>
+        <Button
+          className='filter--button'
+          variant='secondary'
+          onClick={() => clear(inputDomRef, filterItems)}
+        >
+          Bid Now
+        </Button>
+      </div>
+    </div>
+  );
 }
 
 async function populateBidPrices (allItemData) {
