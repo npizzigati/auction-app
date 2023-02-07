@@ -8,6 +8,7 @@ import ClampLines from 'react-clamp-lines';
 import PaginationBar from '../components/PaginationBar.jsx';
 import Filter from '../components/Filter.jsx';
 import DropdownSelect from '../components/DropdownSelect.jsx';
+import authenticate from '../utilities/misc_utils.js';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -16,11 +17,13 @@ function Home () {
   const [itemsOnPage, setItemsOnPage] = useState([]);
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState(null);
+  const [role, setRole] = useState('unauthed');
   const allItemData = useRef([]);
   const filteredItemData = useRef([]);
   const sortDropdownData = buildSortDropdownData();
 
   useEffect(() => {
+    (async () => authenticate({ notSignedInRedirect: '/login' }, setRole, navigate))();
     (async () => {
       await retrieveItemData();
       await populateBidPrices();
@@ -39,9 +42,6 @@ function Home () {
 
   return (
     <Container>
-      <div className='title--container'>
-        <span className='title--text'>Antique Auction</span>
-      </div>
       <div className='gallery--criteria-container'>
         <Filter
           allItems={allItemData.current}
@@ -59,11 +59,8 @@ function Home () {
   );
 
   function buildItemsOnPage () {
-    console.log('building items on page');
     const start = (page - 1) * ITEMS_PER_PAGE;
     const end = start + ITEMS_PER_PAGE;
-    console.log('page: ', page);
-    console.log('start, end: ', start, end);
     const markup = filteredItemData.current.slice(start, end).map(item => {
       return buildItemMarkup(item);
     });
@@ -72,7 +69,6 @@ function Home () {
   }
 
   function createFilterer () {
-    console.log('Filtering item data'.toUpperCase());
     return function (text) {
       text = text.toLowerCase();
       if (text === '') {
@@ -91,7 +87,6 @@ function Home () {
     await axios.get('api/v1/items')
       .then(res => {
         allItemData.current = res.data;
-        console.log(res.data);
       });
     // TODO: Error handling
   }
@@ -132,24 +127,19 @@ function Home () {
   }
 
   async function populateBidPrices () {
-    for (let i = 0; i < allItemData.current.length; i++) {
-      const item = allItemData.current[i];
-      const highestBid = await retrieveHighestBid(item.id);
-      if (highestBid === undefined) {
-        item.currentPrice = 0;
-      } else {
-        item.currentPrice = highestBid;
-      }
-    }
+    const highestBids = await retrieveHighestBids();
+    allItemData.current.forEach(item => {
+      item.currentPrice = highestBids[item.id] || 0;
+    });
   }
 
-  async function retrieveHighestBid (itemId) {
-    let highestBid;
-    await axios.get(`api/v1/bids?get_one=highest&item_id=${itemId}`)
+  async function retrieveHighestBids (itemId) {
+    let highestBids;
+    await axios.get('api/v1/bids?get_all=highest')
       .then(res => {
-        highestBid = res.data[0]?.amount;
+        highestBids = res.data;
       });
-    return highestBid;
+    return highestBids;
   }
 
   function buildSortDropdownData () {

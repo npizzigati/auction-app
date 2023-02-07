@@ -30,7 +30,6 @@ function goToPrevPage (ev, currentPage, setPage) {
   if (currentPage === 1) {
     return;
   }
-  console.log('handling click - prev');
   setPage(currentPage - 1);
 }
 
@@ -38,7 +37,6 @@ function goToNextPage (ev, currentPage, totalPages, setPage) {
   if (currentPage === totalPages) {
     return;
   }
-  console.log('handling click - next');
   setPage(currentPage + 1);
 }
 

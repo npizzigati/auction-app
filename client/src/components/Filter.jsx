@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 
-const FILTER_MESSAGE = 'Filter items by name/description text';
+const FILTER_MESSAGE = 'Filter items by text';
 
 function Filter ({ filterItems }) {
   const inputDomRef = useRef(null);
@@ -30,7 +30,6 @@ function Filter ({ filterItems }) {
 }
 
 function clear (inputDomRef, filterItems) {
-  console.log('clearing');
   inputDomRef.current.value = '';
   filterItems('');
 }

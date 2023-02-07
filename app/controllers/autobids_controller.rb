@@ -1,2 +1,0 @@
-class AutobidsController < ApplicationController
-end

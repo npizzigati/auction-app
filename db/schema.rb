@@ -10,15 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_02_151634) do
-  create_table "autobids", force: :cascade do |t|
-    t.decimal "max"
+ActiveRecord::Schema[7.0].define(version: 2023_02_07_211800) do
+  create_table "autobid_configs", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.decimal "max", default: "0.0", null: false
     t.integer "alert_percentage"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_autobid_configs_on_user_id"
+  end
+
+  create_table "autobids", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "item_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "amount_bid", default: "0.0", null: false
     t.index ["item_id"], name: "index_autobids_on_item_id"
+    t.index ["user_id", "item_id"], name: "index_autobids_on_user_id_and_item_id", unique: true
     t.index ["user_id"], name: "index_autobids_on_user_id"
   end
 
@@ -35,8 +44,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_02_151634) do
   create_table "items", force: :cascade do |t|
     t.string "name"
     t.string "description"
-    t.decimal "sold_price"
-    t.boolean "sold"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "filename"
@@ -50,6 +57,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_02_151634) do
     t.string "name"
   end
 
+  add_foreign_key "autobid_configs", "users"
   add_foreign_key "autobids", "items"
   add_foreign_key "autobids", "users"
   add_foreign_key "bids", "items"
