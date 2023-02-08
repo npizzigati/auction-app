@@ -38,3 +38,5 @@
 
 # Ignore image files
 /client/public/images/*
+# But keep the image directory
+!postgres-data/.gitkeep
