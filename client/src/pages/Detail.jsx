@@ -26,6 +26,7 @@ function Detail () {
   const [showBidArea, setShowBidArea] = useState(true);
   const [autoBidAlertOptions, setAutoBidAlertOptions] = useState('');
   const [bidErrorMsg, setBidErrorMsg] = useState('');
+  const [bidInputValue, setBidInputValue] = useState('');
   const bidAmountDomRef = useRef(null);
 
   useEffect(() => {
@@ -33,8 +34,8 @@ function Detail () {
     (async () => {
       await retrieveItemData();
       updateBidPrice();
-      autoBidAlertPollInterval = setInterval(pollAutoBidPercentages, 5000);
-      updateBidPricePollInterval = setInterval(updateBidPrice, 2000);
+      autoBidAlertPollInterval = setInterval(pollAutoBidPercentages, 7000);
+      updateBidPricePollInterval = setInterval(updateBidPrice, 6000);
     })();
 
     return () => {
@@ -43,13 +44,23 @@ function Detail () {
     };
   }, []);
 
+  useEffect(() => {
+    // Page update caused by poll functions causes this field to lose focus
+    // Here we give it back
+    bidAmountDomRef.current.focus();
+  });
+
   function pollAutoBidPercentages () {
     const headers = { headers: { Authenticate: localStorage.token } };
     axios.get('api/v1/autobid/percentages', headers)
       .then(res => {
-        const alertPercentage = res.data.alert_percentage;
-        const actualPercentage = res.data.actual_percentage;
-        if (actualPercentage >= 100) {
+        if (!res.data.autobid_configured) {
+          return;
+        }
+        const alertPercentage = Number(res.data.alert_percentage);
+        const actualPercentage = Number(res.data.actual_percentage);
+        const delta = 0.01;
+        if (actualPercentage + delta >= 100) {
           setAutoBidAlertOptions({
             heading: 'Auto-Bidding Suspended',
             message: 'Your auto-bids have reached your allotted maximum. To continue autobidding, ' +
@@ -57,13 +68,15 @@ function Detail () {
             variant: 'danger'
           });
           setShowAutoBidAlert(true);
-        } else if (alertPercentage != null && actualPercentage >= alertPercentage) {
+        } else if (alertPercentage != null && actualPercentage + delta >= alertPercentage) {
           setAutoBidAlertOptions({
             heading: 'Auto-Bidding Amount Alert',
             message: `Your auto-bids have now passed ${alertPercentage}% of your allotted maximum.`,
             variant: 'danger'
           });
           setShowAutoBidAlert(true);
+        } else {
+          setShowAutoBidAlert(false);
         }
       })
       .catch(err => {
@@ -142,13 +155,18 @@ function Detail () {
         <div className='detail--bid-form-grouper'>
           <div className='detail--bid-input-row'>
             <div>
-              <Form.Control
+              <input
                 ref={bidAmountDomRef}
+                className='detail--bid-input'
                 type='text'
                 placeholder='Enter bid'
                 required
+                value={bidInputValue}
                 pattern='^(\$)?\d+(\.\d{2})?$'
-                onChange={() => setBidErrorMsg('')}
+                onChange={(ev) => {
+                  setBidErrorMsg('');
+                  setBidInputValue(ev.target.value);
+                }}
               />
             </div>
             <div>
