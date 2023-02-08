@@ -13,7 +13,7 @@
 ### Download image files from: [https://www.dropbox.com/s/72l7xdccj8ol2mb/images.zip?dl=0](https://www.dropbox.com/s/72l7xdccj8ol2mb/images.zip?dl=0)
 ### And unzip them into auction/client/public/images directory
 
-### From auction (base) directory, install back-end server dependencies and prepare database: 
+### From auction-app (base) directory, install back-end server dependencies and prepare database: 
 `bundle install && rails db:migrate && rake seed_items && rake seed_users && rake seed_bids`
 ### Launch back-end server
 `rails server`
