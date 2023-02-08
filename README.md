@@ -19,6 +19,6 @@
 
 ### App can be accessed at http://localhost:8080
 
-### Users
-admin1/admin2/user1/user2
+### Users:
+`admin1`/`admin2`/`user1`/`user2`
 The password for all the users is `Test123`
