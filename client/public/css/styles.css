@@ -191,7 +191,12 @@
     text-align: center;
 }
 
-.detail--bid-price {
+.detail--bid-input {
+    all: unset;
+    border: 1px solid #999;
+    border-radius: 0.5em;
+    height: 2em;
+    padding: 0.1em 0.5em;
 }
 
 .detail--own-bid-indicator {
