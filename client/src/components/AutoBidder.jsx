@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
 import axios from '../axiosWithConfig.js';
 
-function AutoBidder ({ itemId, setShowAlert, setAlertText }) {
+function AutoBidder ({ itemId, setShowAlert, setAlertOptions }) {
   const [autoBid, setAutoBid] = useState(null);
   const checkboxDomRef = useRef(null);
 
@@ -41,7 +41,7 @@ function AutoBidder ({ itemId, setShowAlert, setAlertText }) {
         if (res.data.status === 'deleted') {
           setAutoBid(null);
         } else {
-          setAlertText({
+          setAlertOptions({
             heading: 'Your auto-bid could not be removed due to the following error(s):',
             message: res.data.errors.join('\n'),
             variant: 'danger'
@@ -61,7 +61,7 @@ function AutoBidder ({ itemId, setShowAlert, setAlertText }) {
         if (res.data.status === 'created') {
           setAutoBid({ id: res.data.autobid.id });
         } else {
-          setAlertText({
+          setAlertOptions({
             heading: 'Auto-bid could not be saved due to the following error(s):',
             message: res.data.errors.join('\n'),
             variant: 'danger'

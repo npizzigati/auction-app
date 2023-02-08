@@ -39,11 +39,17 @@ module Api::V1
       user_id = retrieve_user_id
       autobidConfig = AutobidConfig.find_by(user_id: user_id)
       sum_placed = Autobid.sum_placed(user_id)
-      puts '***sum_placed:****', sum_placed
-      render json: {
-               alert_percentage: autobidConfig.alert_percentage,
-               actual_percentage: (sum_placed / autobidConfig.max) * 100
-             }
+      if autobidConfig
+        render json: {
+                autobid_configured: true,
+                alert_percentage: autobidConfig.alert_percentage,
+                actual_percentage: (sum_placed / autobidConfig.max) * 100
+              }
+      else
+        render json: {
+                autobid_configured: false
+              }
+      end
     end
   end
 end

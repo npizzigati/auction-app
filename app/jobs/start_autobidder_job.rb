@@ -20,16 +20,14 @@ class StartAutobidderJob < ApplicationJob
       current_bid_amount = (current_bid && current_bid.pluck(:amount)[0]) || 0
       current_bid_user_id = current_bid && current_bid.pluck(:user_id)[0]
 
-      # Only bid if most recent bid is not from this user
+      # Only potentially bid if most recent bid is not from this user
       unless autobid.user_id == current_bid_user_id
         new_bid_amount = current_bid_amount + 1
 
-        puts 'sum_placed:', Autobid.sum_placed(autobid.user_id)
-        puts 'max', AutobidConfig.find_by(user_id: autobid.user_id).max
-        float_delta = 0.001
-        if (Autobid.sum_placed(autobid.user_id)) + float_delta >= AutobidConfig.find_by(user_id: autobid.user_id).max
+        if Autobid.sum_placed(autobid.user_id) + (new_bid_amount - autobid.amount_bid) > AutobidConfig.find_by(user_id: autobid.user_id).max
           # Do nothing if total bids placed by all this user's
-          # autobids plus the amount of the new bid are greater
+          # autobids plus (the amount of the potential new bid
+          # minus the amount autobid on this item so far) are greater
           # than the max they've indicated in the autobid config
         else
           new_bid_data = {

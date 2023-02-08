@@ -5,17 +5,6 @@ class Autobid < ApplicationRecord
   validates :item_id, uniqueness: { scope: :user_id, message: 'already has an auto-bidder' }
 
   validate :config_exists?
-  # validate :config_max_high_enough?
-
-  # def config_max_high_enough?
-  #   return if !AutobidConfig.find_by(user_id: user_id)
-
-  #   puts Bid.total_amount_active_bids(user_id);
-
-  #   # if AutobidConfig.find_by(user_id: user_id).max
-  #   #   errors.add(:user_id, " (Settings -> Configure Auto-Bidder)")
-  #   # end
-  # end
 
   def config_exists?
     if !AutobidConfig.find_by(user_id: user_id)

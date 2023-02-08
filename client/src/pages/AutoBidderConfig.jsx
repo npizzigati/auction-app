@@ -14,7 +14,7 @@ function AutoBidderConfig ({ userId }) {
   const [role, setRole] = useState(false);
   const [settingsSaved, setSettingsSaved] = useState(true);
   const [showAlert, setShowAlert] = useState(false);
-  const [alertText, setAlertText] = useState('');
+  const [alertOptions, setAlertOptions] = useState('');
   const maxAutoBidDomRef = useRef(null);
   const autoBidAlertPercentageDomRef = useRef(null);
 
@@ -29,7 +29,7 @@ function AutoBidderConfig ({ userId }) {
   return (
     <Container className='u-max-width-35'>
       {showAlert &&
-        <DismissibleAlert alertText={alertText} onClose={() => setShowAlert(false)} />}
+        <DismissibleAlert alertOptions={alertOptions} onClose={() => setShowAlert(false)} />}
       <div className='autobidder-config--title'>Auto-Bidder Settings</div>
       <Form onSubmit={saveAutoBidder} noValidate>
         <Form.Group className='mb-3' controlId='formAutoBidMax'>
@@ -142,7 +142,7 @@ function AutoBidderConfig ({ userId }) {
           setAutoBidConfig({ id: id, max: max, alertPercentage: alert_percentage });
           setSettingsSaved(true);
         } else {
-          setAlertText({
+          setAlertOptions({
             heading: 'Auto-bid settings could not be saved due to the following error(s):',
             message: res.data.errors.join('\n'),
             variant: 'danger'
@@ -180,7 +180,7 @@ function AutoBidderConfig ({ userId }) {
         }
       })
       .catch(err => {
-        setAlertText({
+        setAlertOptions({
           heading: 'We are experiencing technical difficulties.',
           message: `Error: ${err}`,
           variant: 'danger'
