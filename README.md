@@ -1,11 +1,12 @@
 # README
 
 ### Make sure you have the following installed
-- Ruby (>= 3.0)
+- Ruby (~> 3.0.0)
 - Ruby on Rails 7.0.4
 - Bundler
 - SQLite
-- Node (>= 12.0)
+- Node (>= 12.0, <= 16.0)
+- npm
 
 ### Clone the app
 `git clone https://github.com/npizzigati/auction-app.git`
