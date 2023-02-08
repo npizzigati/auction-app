@@ -10,7 +10,7 @@ import authenticate from '../utilities/misc_utils.js';
 function Login () {
   const navigate = useNavigate();
   const [showAlert, setShowAlert] = useState(false);
-  const alertText = {
+  const alertOptions = {
     heading: 'Login Unsuccessful',
     message: 'Check your username and password',
     variant: 'danger'
@@ -33,7 +33,7 @@ function Login () {
       <>
         <Form onSubmit={handleSubmit}>
           <div className='login--form-container'>
-            {showAlert && <DismissibleAlert onClose={() => setShowAlert(false)} alertText={alertText} />}
+            {showAlert && <DismissibleAlert onClose={() => setShowAlert(false)} alertOptions={alertOptions} />}
             <Form.Control ref={usernameDomRef} type='text' placeholder='Username' required />
             <Form.Control ref={passwordDomRef} type='password' placeholder='Password' required />
             <Button variant='primary' type='submit'>
