@@ -203,6 +203,7 @@ function Detail () {
       }
       setShowAlert(false);
       const value = bidAmountDomRef.current.value.replace('$', '');
+      setBidInputValue('');
       const headers = { headers: { Authenticate: localStorage.token } };
       await axios.post('api/v1/bids', {
         bid: value,
